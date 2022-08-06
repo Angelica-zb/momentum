@@ -37,11 +37,9 @@ function showDate() {
 function getTimeOfDay() {
     let timeOfDay = '';
     let hoursNow = new Date().getHours();
-    const timeOfDayArr = ['morning', 'afternoon', 'evening', 'night'];
+    const timeOfDayArr = ['night', 'morning', 'afternoon', 'evening'];
     let a = Math.floor(hoursNow / 6);
-    if (hoursNow == 0) {
-        timeOfDay = timeOfDayArr[0]
-    } else { timeOfDay = timeOfDayArr[a]; }
+    timeOfDay = timeOfDayArr[a];
     return timeOfDay
 }
 const timeOfDay = getTimeOfDay();
@@ -161,4 +159,97 @@ async function changeQuotes() {
 }
 changeQuotes()
 butQuote.addEventListener('click', changeQuotes);
+
+
+//player
+const playPrev = document.querySelector('.play-prev');
+const play = document.querySelector('.play');
+const playNext = document.querySelector('.play-next ');
+const ulPlayList = document.querySelector('.play-list');
+
+let isPlay = false;
+let playNum = 0
+
+import playList from './playList.js';
+playList.forEach(el => {
+    const li = document.createElement('li');
+    li.classList.add('play-item');
+    li.textContent = el.title;
+    ulPlayList.append(li)
+})
+
+const audio = new Audio();
+
+function playAudio() {
+    audio.src = playList[playNum].src;
+    if (!isPlay) {
+        playItem[playNum].classList.add('item-active');
+        audio.currentTime = 0;
+        audio.play();
+        isPlay = true;
+    } else {
+        audio.pause();
+        isPlay = false;
+    }
+    audio.addEventListener('ended', playNextAudio);
+}
+
+const playItem = document.querySelectorAll('.play-item');
+
+function pauseAudio() {
+    play.classList.toggle('pause');
+}
+
+play.addEventListener('click', function(p) {
+    playAudio()
+    pauseAudio();
+})
+
+function playNextAudio() {
+    play.classList.add('pause');
+    isPlay = false;
+    playItem[playNum].classList.remove('item-active');
+    if (playNum < playList.length - 1) {
+        playNum++
+    } else {
+        playNum = 0
+    }
+    playAudio()
+}
+
+function playPrevAudio() {
+    playItem[playNum].classList.remove('item-active');
+    isPlay = false;
+    if (playNum > 0) {
+        playNum--
+    } else {
+        playNum = (playList.length - 1)
+    }
+    playAudio()
+}
+
+playNext.addEventListener('click', playNextAudio);
+playPrev.addEventListener('click', playPrevAudio);
+
+
+
+
+
+
+
+
+
+
+// itemActive.classList.toggle('item-active')
+
+//playPrev.addEventListener('click', playPrevAudio);
+//playNext.addEventListener('click', playNextAudio);
+
+
+//item-active
+
+
+
+
+
 //console.log(k)
