@@ -16,13 +16,13 @@ const slidePrev = document.querySelector('.slide-prev');
 const slideNext = document.querySelector('.slide-next');
 let randomNum = +getRandomNum();
 
-
-
 function showTime() {
     let timeScrin = new Date().toLocaleTimeString();
     time.textContent = timeScrin;
     showDate();
-    getTimeOfDay()
+    getTimeOfDay();
+    let timeOfDay = getTimeOfDay();
+    greeting.textContent = `Good ${timeOfDay}`;
 
     setTimeout(showTime, 1000);
 }
@@ -41,8 +41,9 @@ function getTimeOfDay() {
     let a = Math.floor(hoursNow / 6);
     timeOfDay = timeOfDayArr[a];
     return timeOfDay
+    setTimeout(getTimeOfDay, 1000);
 }
-const timeOfDay = getTimeOfDay();
+let timeOfDay = getTimeOfDay();
 greeting.textContent = `Good ${timeOfDay}`;
 
 //LocalStorage 
@@ -77,7 +78,6 @@ function setBg() {
     let bgNum = (getRandomNum()).padStart(2, '0')
 
     document.body.style.backgroundImage = `url('https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${bgNum}.jpg')`;
-
 }
 setBg()
 
@@ -160,12 +160,14 @@ async function changeQuotes() {
 changeQuotes()
 butQuote.addEventListener('click', changeQuotes);
 
-
 //player
 const playPrev = document.querySelector('.play-prev');
 const play = document.querySelector('.play');
 const playNext = document.querySelector('.play-next ');
 const ulPlayList = document.querySelector('.play-list');
+const current = document.querySelector('.current');
+const nameSong = document.querySelector('.name-song');
+const lengthSong = document.querySelector('.length-song');
 
 let isPlay = false;
 let playNum = 0
@@ -174,27 +176,76 @@ import playList from './playList.js';
 playList.forEach(el => {
     const li = document.createElement('li');
     li.classList.add('play-item');
+
     li.textContent = el.title;
     ulPlayList.append(li)
+
 })
+
+nameSong.textContent = playList[playNum].title;
+lengthSong.textContent = playList[playNum].duration;
+
 
 const audio = new Audio();
 
 function playAudio() {
+    let currentSong = audio.currentTime;
     audio.src = playList[playNum].src;
+
     if (!isPlay) {
-        playItem[playNum].classList.add('item-active');
-        audio.currentTime = 0;
+        playItems[playNum].classList.add('item-active');
+        nameSong.textContent = playList[playNum].title;
+        lengthSong.textContent = playList[playNum].duration;
+
+        audio.currentTime = currentSong;
         audio.play();
         isPlay = true;
     } else {
+        audio.currentTime = currentSong;
+        playItems[playNum].classList.remove('item-active');
         audio.pause();
         isPlay = false;
     }
     audio.addEventListener('ended', playNextAudio);
 }
 
-const playItem = document.querySelectorAll('.play-item');
+const playItems = document.querySelectorAll('.play-item');
+audio.volume = .75;
+
+if (playItems.length > 0) {
+    for (let i = 0; i < playItems.length; i++) {
+
+        const playItem = playItems[i];
+        playItem.addEventListener("click", function(a) {
+            let currentSong = audio.currentTime;
+            if (playNum != i) {
+                let currentSong = 0;
+                audio.pause();
+                playItems[playNum].classList.remove('item-active');
+                play.classList.add('pause');
+                playNum = i;
+                audio.src = playList[playNum].src;
+                playItems[playNum].classList.add('item-active');
+                nameSong.textContent = playList[playNum].title;
+                lengthSong.textContent = playList[playNum].duration;
+                audio.currentTime = currentSong;
+                audio.play();
+                isPlay = true;
+            } else
+
+            {
+                pauseAudio();
+                playItems[playNum].classList.remove('item-active');
+
+                playNum = i;
+                playAudio()
+            }
+
+            audio.addEventListener('ended', playNextAudio);
+
+        })
+    }
+}
 
 function pauseAudio() {
     play.classList.toggle('pause');
@@ -208,7 +259,7 @@ play.addEventListener('click', function(p) {
 function playNextAudio() {
     play.classList.add('pause');
     isPlay = false;
-    playItem[playNum].classList.remove('item-active');
+    playItems[playNum].classList.remove('item-active');
     if (playNum < playList.length - 1) {
         playNum++
     } else {
@@ -218,7 +269,8 @@ function playNextAudio() {
 }
 
 function playPrevAudio() {
-    playItem[playNum].classList.remove('item-active');
+    play.classList.add('pause');
+    playItems[playNum].classList.remove('item-active');
     isPlay = false;
     if (playNum > 0) {
         playNum--
@@ -227,29 +279,56 @@ function playPrevAudio() {
     }
     playAudio()
 }
-
 playNext.addEventListener('click', playNextAudio);
 playPrev.addEventListener('click', playPrevAudio);
 
 
+//player custom
 
+const player = document.querySelectorAll('.player');
 
+const timeline = document.querySelector(".timeline");
 
+timeline.addEventListener("click", e => {
+    const timelineWidth = window.getComputedStyle(timeline).width;
+    const timeToSeek = e.offsetX / parseInt(timelineWidth) * audio.duration;
+    audio.currentTime = timeToSeek;
+});
 
+setInterval(() => {
+    const progressBar = document.querySelector(".progress");
+    progressBar.style.width = audio.currentTime / audio.duration * 100 + "%";
+    current.textContent = getTimeCodeFromNum(
+        audio.currentTime
+    );
+}, 500);
 
+function getTimeCodeFromNum(num) {
+    let seconds = parseInt(num);
+    let minutes = parseInt(seconds / 60);
+    seconds -= minutes * 60;
+    const hours = parseInt(minutes / 60);
+    minutes -= hours * 60;
 
+    if (hours === 0) return `${minutes}:${String(seconds % 60).padStart(2, 0)}`;
+    return `${String(hours).padStart(2, 0)}:${minutes}:${String(seconds % 60).padStart(2, 0)}`;
+}
 
+document.querySelector(".volume-percentage").style.width = '75%';
+const volumeSlider = document.querySelector(".volume-slider");
+volumeSlider.addEventListener('click', e => {
+    const sliderWidth = window.getComputedStyle(volumeSlider).width;
+    const newVolume = e.offsetX / parseInt(sliderWidth);
+    audio.volume = newVolume;
+    document.querySelector(".volume-percentage").style.width = newVolume * 100 + '%';
+})
 
-// itemActive.classList.toggle('item-active')
-
-//playPrev.addEventListener('click', playPrevAudio);
-//playNext.addEventListener('click', playNextAudio);
-
-
-//item-active
-
-
-
-
-
-//console.log(k)
+document.querySelector(".volume-button").addEventListener("click", () => {
+    const volumeEl = document.querySelector(".volume-button");
+    audio.muted = !audio.muted;
+    if (audio.muted) {
+        volumeEl.style.opacity = 0.4;
+    } else {
+        volumeEl.style.opacity = 1;
+    }
+});
