@@ -1,3 +1,29 @@
+//translation
+let langSelect = 'en';
+import { library } from './list.js';
+
+const ru = document.querySelector('.ru');
+const en = document.querySelector('.en');
+ru.addEventListener('click', function() {
+    langSelect = 'ru';
+    showDate();
+    showGreeting();
+    getWeather();
+
+    //  quotes = "./js/dataRu.json";
+    changeQuotes()
+})
+
+en.addEventListener('click', function() {
+    langSelect = 'en';
+    showDate();
+    showGreeting();
+    getWeather();
+
+    // quotes = "./js/data.json";
+    changeQuotes()
+})
+
 //time date
 const time = document.querySelector('.time');
 const date = new Date();
@@ -21,19 +47,32 @@ function showTime() {
     time.textContent = timeScrin;
     showDate();
     getTimeOfDay();
-    let timeOfDay = getTimeOfDay();
-    greeting.textContent = `Good ${timeOfDay}`;
-
+    showGreeting()
+    getTimeOfDayLang()
     setTimeout(showTime, 1000);
 }
 showTime();
 
 function showDate() {
-    let dateW = new Date().toLocaleDateString('en-En', options);
+    let dateW = new Date().toLocaleDateString(`${langSelect}-En`, options);
     dateScrin.textContent = dateW;
 }
 
-//greeting
+//greeting  
+
+function getTimeOfDayLang() {
+    let hoursNow = new Date().getHours();
+    if (hoursNow < 6) {
+        return library.night[langSelect]
+    } else if (hoursNow < 12) {
+        return library.morning[langSelect]
+    } else if (hoursNow < 18) {
+        return library.afternoon[langSelect]
+    } else if (hoursNow < 24) {
+        return library.evening[langSelect]
+    }
+}
+
 function getTimeOfDay() {
     let timeOfDay = '';
     let hoursNow = new Date().getHours();
@@ -41,17 +80,23 @@ function getTimeOfDay() {
     let a = Math.floor(hoursNow / 6);
     timeOfDay = timeOfDayArr[a];
     return timeOfDay
-    setTimeout(getTimeOfDay, 1000);
 }
-let timeOfDay = getTimeOfDay();
-greeting.textContent = `Good ${timeOfDay}`;
+
+function showGreeting() {
+    let timeOfDay = getTimeOfDayLang();
+    nameGret.placeholder = `${library.greetingPlace[langSelect]}`;
+    greeting.textContent = `${library.greeting[langSelect]}${timeOfDay}`;
+    //setTimeout(getTimeOfDay, 1000);
+}
+showGreeting()
 
 //LocalStorage 
 
 function setLocalStorage() {
     localStorage.setItem('name', nameGret.value);
     localStorage.setItem('city', cityWeath.value);
-
+    localStorage.setItem('language', langSelect);
+    localStorage.setItem('quotes', quotes);
 }
 window.addEventListener('beforeunload', setLocalStorage)
 
@@ -60,8 +105,11 @@ function getLocalStorage() {
     if (localStorage.getItem('name')) {
         nameGret.value = localStorage.getItem('name');
     }
-    cityWeath.value = localStorage.getItem('city') || 'Minsk';
+    langSelect = localStorage.getItem('language')
+        //quotes = localStorage.getItem('quotes')
+    cityWeath.value = localStorage.getItem('city') || (`${library.cityMinsk[langSelect]}`);
     getWeather()
+    changeQuotes()
 }
 
 window.addEventListener('load', getLocalStorage)
@@ -76,7 +124,6 @@ function getRandomNum() {
 function setBg() {
     let timeOfDay = getTimeOfDay();
     let bgNum = (getRandomNum()).padStart(2, '0')
-
     document.body.style.backgroundImage = `url('https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${bgNum}.jpg')`;
 }
 setBg()
@@ -103,7 +150,6 @@ function getSlidePrev() {
 }
 
 //weather
-
 const weatherIcon = document.querySelector('.weather-icon');
 const temperature = document.querySelector('.temperature');
 const weatherDescription = document.querySelector('.weather-description');
@@ -115,11 +161,13 @@ const weatherError = document.querySelector('.weather-error')
 city.addEventListener('change', getWeather);
 
 async function getWeather() {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city.value}&lang=en&appid=08f2a575dda978b9c539199e54df03b0&units=metric`;
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city.value}&lang=${langSelect}&appid=08f2a575dda978b9c539199e54df03b0&units=metric`;
     const res = await fetch(url);
     const data = await res.json();
 
-    weatherError.textContent = `Error! ${data.message} for '${city.value}'!`
+    city.placeholder = `${library.cityPlace[langSelect]}`;
+    //weatherError.textContent = `Error! ${data.message} for '${city.value}'!`
+    weatherError.textContent = `${library.errorWeather[langSelect]} '${city.value}'!`
     weatherIcon.className = 'weather-icon owf';
     temperature.textContent = '';
     weatherDescription.textContent = '';
@@ -129,8 +177,8 @@ async function getWeather() {
         weatherIcon.classList.add(`owf-${data.weather[0].id}`);
         temperature.textContent = `${data.main.temp.toFixed(0)}°C`;
         weatherDescription.textContent = data.weather[0].description;
-        wind.textContent = `Wind speed: ${data.wind.speed.toFixed(0)} m/s`;
-        humidity.textContent = `Humidity: ${data.main.humidity.toFixed(0)}%`;
+        wind.textContent = `${library.wind[langSelect]}: ${data.wind.speed.toFixed(0)} ${library.windSpeed[langSelect]}`;
+        humidity.textContent = `${library.humidity[langSelect]}: ${data.main.humidity.toFixed(0)}%`;
         weatherError.textContent = ''
 
     }
@@ -140,9 +188,10 @@ async function getWeather() {
 const quote = document.querySelector('.quote');
 const author = document.querySelector('.author');
 const butQuote = document.querySelector('.change-quote');
+// let quotes = "./js/data.json";
 
 async function changeQuotes() {
-    const quotes = "./js/data.json";
+    const quotes = langSelect === 'en' ? './js/data.json' : './js/dataRu.json';
     const res = await fetch(quotes);
     const data = await res.json();
 
@@ -151,10 +200,10 @@ async function changeQuotes() {
     if (text == (`"${data[n].text}."`)) {
         if (n < 10) { n = n + 1 } else { n = n - 1 }
         quote.textContent = `"${data[n].text}."`
-        author.textContent = `"${data[n].author}."`
+        author.textContent = `${data[n].author}`
     } else {
         quote.textContent = `"${data[n].text}."`
-        author.textContent = `"${data[n].author}."`
+        author.textContent = `${data[n].author}`
     }
 }
 changeQuotes()
@@ -165,53 +214,117 @@ const playPrev = document.querySelector('.play-prev');
 const play = document.querySelector('.play');
 const playNext = document.querySelector('.play-next ');
 const ulPlayList = document.querySelector('.play-list');
+//player-custom
 const current = document.querySelector('.current');
 const nameSong = document.querySelector('.name-song');
 const lengthSong = document.querySelector('.length-song');
-
+//
 let isPlay = false;
 let playNum = 0
 
-import playList from './playList.js';
+import { playList } from './list.js';
 playList.forEach(el => {
     const li = document.createElement('li');
     li.classList.add('play-item');
-
     li.textContent = el.title;
     ulPlayList.append(li)
-
 })
 
+const playItems = document.querySelectorAll('.play-item');
+
+//player-custom
 nameSong.textContent = playList[playNum].title;
 lengthSong.textContent = playList[playNum].duration;
-
-
+//
 const audio = new Audio();
 
 function playAudio() {
-    let currentSong = audio.currentTime;
+    let currentSong = audio.currentTime; //player-custom
     audio.src = playList[playNum].src;
-
     if (!isPlay) {
         playItems[playNum].classList.add('item-active');
-        nameSong.textContent = playList[playNum].title;
-        lengthSong.textContent = playList[playNum].duration;
-
-        audio.currentTime = currentSong;
+        nameSong.textContent = playList[playNum].title; //player-custom
+        lengthSong.textContent = playList[playNum].duration; //player-custom
+        audio.currentTime = currentSong; //player-custom
         audio.play();
         isPlay = true;
     } else {
-        audio.currentTime = currentSong;
-        playItems[playNum].classList.remove('item-active');
+        audio.currentTime = currentSong; //player-custom
+        playItems[playNum].classList.remove('item-active'); //player-custom
         audio.pause();
         isPlay = false;
     }
     audio.addEventListener('ended', playNextAudio);
 }
 
-const playItems = document.querySelectorAll('.play-item');
-audio.volume = .75;
+function pauseAudio() {
+    play.classList.toggle('pause');
+}
 
+play.addEventListener('click', function(p) {
+    playAudio()
+    pauseAudio();
+})
+
+function playNextAudio() {
+    audio.currentTime = 0;
+    play.classList.add('pause');
+    isPlay = false;
+    playItems[playNum].classList.remove('item-active');
+    if (playNum < playList.length - 1) {
+        playNum++
+    } else {
+        playNum = 0
+    }
+    playAudio()
+}
+
+function playPrevAudio() {
+    audio.currentTime = 0;
+    play.classList.add('pause');
+    playItems[playNum].classList.remove('item-active');
+    isPlay = false;
+    if (playNum > 0) {
+        playNum--
+    } else {
+        playNum = (playList.length - 1)
+    }
+    playAudio()
+}
+playNext.addEventListener('click', playNextAudio);
+playPrev.addEventListener('click', playPrevAudio);
+
+//-----------player custom---------------
+const player = document.querySelectorAll('.player');
+const timeline = document.querySelector(".timeline");
+
+//timeline
+timeline.addEventListener("click", e => {
+    const timelineWidth = window.getComputedStyle(timeline).width;
+    const timeToSeek = e.offsetX / parseInt(timelineWidth) * audio.duration;
+    audio.currentTime = timeToSeek;
+});
+
+setInterval(() => {
+    const progressBar = document.querySelector(".progress");
+    progressBar.style.width = audio.currentTime / audio.duration * 100 + "%";
+    current.textContent = getTimeCodeFromNum(
+        audio.currentTime
+    );
+}, 500);
+
+function getTimeCodeFromNum(num) {
+    let seconds = parseInt(num);
+    let minutes = parseInt(seconds / 60);
+    seconds -= minutes * 60;
+    const hours = parseInt(minutes / 60);
+    minutes -= hours * 60;
+
+    if (hours === 0) return `${minutes}:${String(seconds % 60).padStart(2, 0)}`;
+    return `${String(hours).padStart(2, 0)}:${minutes}:${String(seconds % 60).padStart(2, 0)}`;
+}
+
+//control song
 if (playItems.length > 0) {
     for (let i = 0; i < playItems.length; i++) {
 
@@ -247,73 +360,7 @@ if (playItems.length > 0) {
     }
 }
 
-function pauseAudio() {
-    play.classList.toggle('pause');
-}
-
-play.addEventListener('click', function(p) {
-    playAudio()
-    pauseAudio();
-})
-
-function playNextAudio() {
-    play.classList.add('pause');
-    isPlay = false;
-    playItems[playNum].classList.remove('item-active');
-    if (playNum < playList.length - 1) {
-        playNum++
-    } else {
-        playNum = 0
-    }
-    playAudio()
-}
-
-function playPrevAudio() {
-    play.classList.add('pause');
-    playItems[playNum].classList.remove('item-active');
-    isPlay = false;
-    if (playNum > 0) {
-        playNum--
-    } else {
-        playNum = (playList.length - 1)
-    }
-    playAudio()
-}
-playNext.addEventListener('click', playNextAudio);
-playPrev.addEventListener('click', playPrevAudio);
-
-
-//player custom
-
-const player = document.querySelectorAll('.player');
-
-const timeline = document.querySelector(".timeline");
-
-timeline.addEventListener("click", e => {
-    const timelineWidth = window.getComputedStyle(timeline).width;
-    const timeToSeek = e.offsetX / parseInt(timelineWidth) * audio.duration;
-    audio.currentTime = timeToSeek;
-});
-
-setInterval(() => {
-    const progressBar = document.querySelector(".progress");
-    progressBar.style.width = audio.currentTime / audio.duration * 100 + "%";
-    current.textContent = getTimeCodeFromNum(
-        audio.currentTime
-    );
-}, 500);
-
-function getTimeCodeFromNum(num) {
-    let seconds = parseInt(num);
-    let minutes = parseInt(seconds / 60);
-    seconds -= minutes * 60;
-    const hours = parseInt(minutes / 60);
-    minutes -= hours * 60;
-
-    if (hours === 0) return `${minutes}:${String(seconds % 60).padStart(2, 0)}`;
-    return `${String(hours).padStart(2, 0)}:${minutes}:${String(seconds % 60).padStart(2, 0)}`;
-}
-
+//volume
 document.querySelector(".volume-percentage").style.width = '75%';
 const volumeSlider = document.querySelector(".volume-slider");
 volumeSlider.addEventListener('click', e => {
@@ -332,3 +379,28 @@ document.querySelector(".volume-button").addEventListener("click", () => {
         volumeEl.style.opacity = 1;
     }
 });
+
+//settings
+const settings = document.querySelector('.settings');
+const settingsMenu = document.querySelector('.settings-menu')
+const cross = document.querySelector('.cross')
+
+cross.addEventListener('click', e => {
+    settings.classList.remove('hidden')
+    settingsMenu.classList.remove('hidden-icon')
+})
+
+settingsMenu.addEventListener('click', e => {
+    settings.classList.add('hidden')
+    settingsMenu.classList.add('hidden-icon')
+})
+
+
+function fun1() {
+    var rad = document.getElementsByName('r1');
+    for (var i = 0; i < rad.length; i++) {
+        if (rad[i].checked) {
+            alert('Выбран ' + i + ' radiobutton');
+        }
+    }
+}
