@@ -1,17 +1,17 @@
-//translation
+//-------------------translation
 let langSelect = 'en';
 import { library } from './list.js';
-
 const ru = document.querySelector('.ru');
 const en = document.querySelector('.en');
+
 ru.addEventListener('click', function() {
     langSelect = 'ru';
     showDate();
     showGreeting();
     getWeather();
-
-    //  quotes = "./js/dataRu.json";
     changeQuotes()
+    translatSettings()
+
 })
 
 en.addEventListener('click', function() {
@@ -19,10 +19,40 @@ en.addEventListener('click', function() {
     showDate();
     showGreeting();
     getWeather();
-
-    // quotes = "./js/data.json";
     changeQuotes()
+    translatSettings()
+
 })
+
+const settingsH3 = document.querySelector('.settings-h3');
+const chooseLangP = document.querySelector('.choose-lang-p');
+const chooseImgP = document.querySelector('.choose-img-p');
+const chooseTagP = document.querySelector('.choose-tag-p');
+const tagChange = document.querySelector('.tag-change');
+const blocksText = document.querySelector('.blocks-text');
+const hideTime = document.querySelector('.hide-time');
+const hideDate = document.querySelector('.hide-date');
+const hideGreeting = document.querySelector('.hide-greeting');
+const hideQuote = document.querySelector('.hide-quote');
+const hideWheather = document.querySelector('.hide-weather');
+const hidePlayer = document.querySelector('.hide-audio');
+const hideTodolist = document.querySelector('.hide-todolist');
+
+function translatSettings() {
+    settingsH3.textContent = library.settingsH3[langSelect]
+    chooseLangP.textContent = library.chooseLangP[langSelect]
+    chooseImgP.textContent = library.chooseImgP[langSelect]
+    chooseTagP.textContent = library.chooseTagP[langSelect]
+    tagChange.textContent = library.tagChange[langSelect]
+    blocksText.textContent = library.blocksText[langSelect]
+    hideTime.textContent = library.hideTime[langSelect]
+    hideDate.textContent = library.hideDate[langSelect]
+    hideGreeting.textContent = library.hideGreeting[langSelect]
+    hideQuote.textContent = library.hideQuote[langSelect]
+    hideWheather.textContent = library.hideWheather[langSelect]
+    hidePlayer.textContent = library.hidePlayer[langSelect]
+    hideTodolist.textContent = library.hideTodolist[langSelect]
+}
 
 //time date
 const time = document.querySelector('.time');
@@ -31,17 +61,16 @@ const currentTime = date.toLocaleTimeString();
 const dateScrin = document.querySelector('.date');
 const options = { weekday: 'long', month: 'long', day: 'numeric' };
 const currentDate = date.toLocaleDateString('en-En', options);
-
 //greeting
 const nameGret = document.querySelector('.name');
 const greeting = document.querySelector('.greeting');
 const hours = date.getHours();
-
 //slider
 const slidePrev = document.querySelector('.slide-prev');
 const slideNext = document.querySelector('.slide-next');
 let randomNum = +getRandomNum();
 
+//------------time ------------date
 function showTime() {
     let timeScrin = new Date().toLocaleTimeString();
     time.textContent = timeScrin;
@@ -58,8 +87,7 @@ function showDate() {
     dateScrin.textContent = dateW;
 }
 
-//greeting  
-
+//-----------------greeting  
 function getTimeOfDayLang() {
     let hoursNow = new Date().getHours();
     if (hoursNow < 6) {
@@ -90,13 +118,12 @@ function showGreeting() {
 }
 showGreeting()
 
-//LocalStorage 
-
+//--------------------------LocalStorage 
 function setLocalStorage() {
+
     localStorage.setItem('name', nameGret.value);
     localStorage.setItem('city', cityWeath.value);
     localStorage.setItem('language', langSelect);
-    localStorage.setItem('quotes', quotes);
 }
 window.addEventListener('beforeunload', setLocalStorage)
 
@@ -106,15 +133,17 @@ function getLocalStorage() {
         nameGret.value = localStorage.getItem('name');
     }
     langSelect = localStorage.getItem('language')
-        //quotes = localStorage.getItem('quotes')
     cityWeath.value = localStorage.getItem('city') || (`${library.cityMinsk[langSelect]}`);
+
+    getCheckedCheck();
     getWeather()
     changeQuotes()
+    translatSettings()
 }
 
 window.addEventListener('load', getLocalStorage)
 
-//slider
+//------------------slider
 function getRandomNum() {
     let ranNum = Math.floor(Math.random() * (20 - 1 + 1)) + 1;
 
@@ -149,7 +178,7 @@ function getSlidePrev() {
     document.body.style.backgroundImage = `url('https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${randomNum}.jpg')`;
 }
 
-//weather
+//------------------------weather
 const weatherIcon = document.querySelector('.weather-icon');
 const temperature = document.querySelector('.temperature');
 const weatherDescription = document.querySelector('.weather-description');
@@ -184,18 +213,17 @@ async function getWeather() {
     }
 };
 
-//Quotes
+//--------------------------Quotes
 const quote = document.querySelector('.quote');
 const author = document.querySelector('.author');
 const butQuote = document.querySelector('.change-quote');
-// let quotes = "./js/data.json";
 
 async function changeQuotes() {
     const quotes = langSelect === 'en' ? './js/data.json' : './js/dataRu.json';
     const res = await fetch(quotes);
     const data = await res.json();
 
-    let n = Math.floor(Math.random() * 20);
+    let n = Math.floor(Math.random() * 19);
     let text = document.getElementsByClassName('quote')[0].textContent;
     if (text == (`"${data[n].text}."`)) {
         if (n < 10) { n = n + 1 } else { n = n - 1 }
@@ -209,7 +237,7 @@ async function changeQuotes() {
 changeQuotes()
 butQuote.addEventListener('click', changeQuotes);
 
-//player
+//------------------player
 const playPrev = document.querySelector('.play-prev');
 const play = document.querySelector('.play');
 const playNext = document.querySelector('.play-next ');
@@ -231,7 +259,6 @@ playList.forEach(el => {
 })
 
 const playItems = document.querySelectorAll('.play-item');
-
 //player-custom
 nameSong.textContent = playList[playNum].title;
 lengthSong.textContent = playList[playNum].duration;
@@ -319,7 +346,6 @@ function getTimeCodeFromNum(num) {
     seconds -= minutes * 60;
     const hours = parseInt(minutes / 60);
     minutes -= hours * 60;
-
     if (hours === 0) return `${minutes}:${String(seconds % 60).padStart(2, 0)}`;
     return `${String(hours).padStart(2, 0)}:${minutes}:${String(seconds % 60).padStart(2, 0)}`;
 }
@@ -327,10 +353,9 @@ function getTimeCodeFromNum(num) {
 //control song
 if (playItems.length > 0) {
     for (let i = 0; i < playItems.length; i++) {
-
         const playItem = playItems[i];
         playItem.addEventListener("click", function(a) {
-            let currentSong = audio.currentTime;
+            //let currentSong = audio.currentTime;
             if (playNum != i) {
                 let currentSong = 0;
                 audio.pause();
@@ -344,18 +369,13 @@ if (playItems.length > 0) {
                 audio.currentTime = currentSong;
                 audio.play();
                 isPlay = true;
-            } else
-
-            {
+            } else {
                 pauseAudio();
                 playItems[playNum].classList.remove('item-active');
-
                 playNum = i;
                 playAudio()
             }
-
             audio.addEventListener('ended', playNextAudio);
-
         })
     }
 }
@@ -380,27 +400,62 @@ document.querySelector(".volume-button").addEventListener("click", () => {
     }
 });
 
-//settings
-const settings = document.querySelector('.settings');
-const settingsMenu = document.querySelector('.settings-menu')
-const cross = document.querySelector('.cross')
+//----------------settings
+//menu
+const settingsAll = document.querySelectorAll('.settings-menu, .cross, .bg-settings')
+if (settingsAll.length > 0) {
+    for (let index = 0; index < settingsAll.length; index++) {
+        const setting = settingsAll[index];
+        const settingsMenu = document.querySelector('.settings-menu')
+        const settings = document.querySelector('.settings');
+        const bgSettings = document.querySelector('.bg-settings')
+        setting.addEventListener("click", function(e) {
+            settings.classList.toggle('hidden');
+            settingsMenu.classList.toggle('hidden-icon');
+            bgSettings.classList.toggle('bg-settings-active');
+        });
+    }
+};
 
-cross.addEventListener('click', e => {
-    settings.classList.remove('hidden')
-    settingsMenu.classList.remove('hidden-icon')
-})
+//hidden block
+let hideBlocks = document.querySelectorAll('.hide-time, .hide-date, .hide-greeting, .hide-quote, .hide-weather, .hide-audio, .hide-todolist')
 
-settingsMenu.addEventListener('click', e => {
-    settings.classList.add('hidden')
-    settingsMenu.classList.add('hidden-icon')
-})
+if (hideBlocks.length > 0) {
+    for (let index = 0; index < hideBlocks.length; index++) {
+        let hideBlock = hideBlocks[index];
 
+        hideBlock.addEventListener("click", function(e) {
+            setTimeout(function() {
+                getCheckedCheck()
+            }, 50)
 
-function fun1() {
-    var rad = document.getElementsByName('r1');
-    for (var i = 0; i < rad.length; i++) {
-        if (rad[i].checked) {
-            alert('Выбран ' + i + ' radiobutton');
+        });
+    }
+}
+
+function getCheckedCheck() {
+    const checkboxes = document.getElementsByClassName('checkbox');
+    for (var index = 0; index < checkboxes.length; index++) {
+        let l = document.querySelectorAll(`.${checkboxes[index].value}`)
+        if (checkboxes[index].checked) {
+            if (l.length > 0) {
+                for (let index = 0; index < l.length; index++) {
+                    let m = l[index]
+                    m.classList.add('hidden-block')
+                }
+            }
+        } else {
+            if (l.length > 0) {
+                for (let index = 0; index < l.length; index++) {
+                    let m = l[index]
+                    m.classList.remove('hidden-block')
+                }
+            }
         }
     }
 }
+
+document.querySelectorAll(".checkbox").forEach(el => {
+    el.onchange = () => localStorage.setItem(el.id, el.checked);
+    el.checked = localStorage.getItem(el.id) === "true";
+})

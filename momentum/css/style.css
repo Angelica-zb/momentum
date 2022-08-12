@@ -34,6 +34,8 @@ body {
 
 .player {
     width: 200px;
+    transition: all 0.3s linear;
+    z-index: 10;
 }
 
 .player-controls {
@@ -144,6 +146,7 @@ body {
     width: 180px;
     min-height: 180px;
     text-align: left;
+    transition: all 0.3s linear;
 }
 
 .weather-error {
@@ -216,12 +219,14 @@ body {
     font-family: 'Arial-MT';
     font-size: 100px;
     letter-spacing: -4px;
+    transition: all 0.3s linear;
 }
 
 .date {
     min-height: 28px;
     font-size: 24px;
     margin-bottom: 20px;
+    transition: all 0.3s linear;
 }
 
 .greeting-container {
@@ -230,8 +235,9 @@ body {
     justify-content: stretch;
     align-items: center;
     min-height: 48px;
-    width: 100vw;
+    /* width: 100vw; */
     font-size: 40px;
+    transition: all 0.3s linear;
 }
 
 .greeting {
@@ -266,6 +272,7 @@ body {
     height: 30vh;
     min-height: 160px;
     padding: 20px;
+    transition: all 0.3s linear;
 }
 
 .change-quote {
@@ -382,11 +389,26 @@ body {
     transition: 0.25s;
 }
 
+.bg-settings {
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0);
+    z-index: -5;
+    transition: all 1s ease;
+}
+
+.bg-settings-active {
+    background-color: rgba(0, 0, 0, 0.2);
+    z-index: 900;
+}
+
 .settings-menu {
     width: 30px;
     position: absolute;
     left: 25px;
-    top: 595px;
+    top: 93%;
 }
 
 .hidden-icon {
@@ -403,17 +425,17 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 300px;
+    width: 350px;
     /* height: 200px; */
     position: absolute;
     left: -400px;
-    top: 265px;
+    top: 47%;
     background: rgb(58 61 30 / 97%);
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 16px;
     border: 0.5px solid rgb(228, 239, 122);
-    z-index: 100;
-    transition: all 0.5s linear;
+    z-index: 1000;
+    transition: all 0.3s linear;
 }
 
 .hidden {
@@ -522,13 +544,21 @@ body {
 }
 
 
+/* hidden block */
+
+.hidden-block {
+    opacity: 0;
+    visibility: hidden;
+}
+
+
 /* стилизация checkbox */
 
 .checkbox {
     vertical-align: top;
     margin: 0 3px 0 0;
-    width: 7px;
-    height: 7px;
+    width: 25px;
+    height: 18px;
 }
 
 .checkbox+label {
