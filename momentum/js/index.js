@@ -1,3 +1,4 @@
+// alert('Уважаемый проверяющий, дождитесь пожалуйста полной загрузки страницы и обратите внимание, что Unsplash API имеет ограничение в 50 картинок в час. Просьба не злоупотреблять именно на этом API переключением тегов и картинок, на деле часто бывает, если пощелкать пару раз подряд он блокируется, но через час снова будет работать. Вот ссылка на документацию,чтобы не быть голословной https://unsplash.com/documentation.')
 //-------------------translation
 let langSelect = 'en';
 import { library } from './list.js';
@@ -119,11 +120,22 @@ function showGreeting() {
 showGreeting()
 
 //--------------------------LocalStorage 
+
+let tagVal = getTimeOfDay();
+let radio = document.getElementById('radio1');
+let radioU = document.getElementById('radio2');
+let radioK = document.getElementById('radio3');
+radio.checked = true;
+
 function setLocalStorage() {
 
     localStorage.setItem('name', nameGret.value);
     localStorage.setItem('city', cityWeath.value);
     localStorage.setItem('language', langSelect);
+    localStorage.setItem('tag', tagVal);
+    localStorage.setItem('radio', radio.checked);
+    localStorage.setItem('radio1', radioU.checked);
+    localStorage.setItem('radio2', radioK.checked);
 }
 window.addEventListener('beforeunload', setLocalStorage)
 
@@ -132,11 +144,19 @@ function getLocalStorage() {
     if (localStorage.getItem('name')) {
         nameGret.value = localStorage.getItem('name');
     }
-    langSelect = localStorage.getItem('language')
+    langSelect = localStorage.getItem('language') || 'en'
     cityWeath.value = localStorage.getItem('city') || (`${library.cityMinsk[langSelect]}`);
+    let n = getTimeOfDay();
+    tagVal = localStorage.getItem('tag') || n;
+    radioU.checked = localStorage.getItem('radio1') === "true";
+    radioK.checked = localStorage.getItem('radio2') === "true";
+    if (radio.checked === "true") {
+        radio.checked = localStorage.getItem('radio')
+    }
 
+    getCheckedSourceImg();
     getCheckedCheck();
-    getWeather()
+    getWeather();
     changeQuotes()
     translatSettings()
 }
@@ -146,7 +166,6 @@ window.addEventListener('load', getLocalStorage)
 //------------------slider
 function getRandomNum() {
     let ranNum = Math.floor(Math.random() * (20 - 1 + 1)) + 1;
-
     return String(ranNum)
 }
 
@@ -155,28 +174,126 @@ function setBg() {
     let bgNum = (getRandomNum()).padStart(2, '0')
     document.body.style.backgroundImage = `url('https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${bgNum}.jpg')`;
 }
-setBg()
+//setBg()
 
 slideNext.addEventListener('click', getSlideNext)
 slidePrev.addEventListener('click', getSlidePrev)
 
 function getSlideNext() {
-    let timeOfDay = getTimeOfDay();
-    if (randomNum < 20) {
-        randomNum++
-    } else { randomNum = 1 }
-    randomNum = (String(randomNum)).padStart(2, '0')
-    document.body.style.backgroundImage = `url('https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${randomNum}.jpg')`;
+    const radios = document.getElementsByClassName('radio');
+    for (var index = 0; index < radios.length; index++) {
+        let l = document.querySelectorAll(`.${radios[index].value}`)
+
+        if (radios[index].checked) {
+            for (let index = 0; index < l.length; index++) {
+                let m = l[index]
+                console.log(m.value)
+                if (m.value == 'GitHub') {
+                    let timeOfDay = getTimeOfDay();
+                    if (randomNum < 20) {
+                        randomNum++
+                    } else { randomNum = 1 }
+                    randomNum = (String(randomNum)).padStart(2, '0')
+                    document.body.style.backgroundImage = `url('https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${randomNum}.jpg')`;
+                } else if (m.value == 'Unsplash') {
+                    getLinkToImageUnsplash();
+                } else {
+                    getLinkToImageFlickr();
+                }
+            }
+        }
+    }
 }
 
 function getSlidePrev() {
-    let timeOfDay = getTimeOfDay();
-    if (randomNum > 1) {
-        randomNum--
-    } else { randomNum = 20 }
-    randomNum = (String(randomNum)).padStart(2, '0')
-    document.body.style.backgroundImage = `url('https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${randomNum}.jpg')`;
+    if (radios[index].checked) {
+        for (let index = 0; index < l.length; index++) {
+            let m = l[index]
+            console.log(m.value)
+            if (m.value == 'GitHub') {
+                let timeOfDay = getTimeOfDay();
+                if (randomNum > 1) {
+                    randomNum--
+                } else { randomNum = 20 }
+                randomNum = (String(randomNum)).padStart(2, '0')
+                document.body.style.backgroundImage = `url('https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${randomNum}.jpg')`;
+            } else if (m.value == 'Unsplash') {
+                getLinkToImageUnsplash();
+            } else {
+                getLinkToImageFlickr();
+            }
+        }
+    }
 }
+
+//-----------Images API
+
+const tag = document.querySelector('.tag');
+const tagChanges = document.querySelector('.tag-change');
+
+async function getLinkToImageUnsplash() {
+    const url = `https://api.unsplash.com/photos/random?query=${tagVal}&client_id=OVjm8rzNtWjawsFh8ITvJLyI2sFPcl75zJr7V44pS1A`;
+    const res = await fetch(url);
+    const data = await res.json();
+    // console.log(data.urls.regular)
+    document.body.style.backgroundImage = `url('${data.urls.regular}')`;
+}
+
+async function getLinkToImageFlickr() {
+    const url = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=764cc0de54bd68d70c98eae8f5350c01&tags=${tagVal}&extras=url_l&format=json&nojsoncallback=1`;
+    const res = await fetch(url);
+    const data = await res.json();
+    let n = Math.floor(Math.random() * (100 - 1 + 1)) + 1;
+    //console.log(data.photos.photo[n].url_l)
+    document.body.style.backgroundImage = `url('${data.photos.photo[n].url_l}')`;
+}
+
+tagChanges.addEventListener('click', function() {
+    tagVal = tag.value;
+    getCheckedSourceImg()
+})
+
+function getCheckedSourceImg() {
+    const radios = document.getElementsByClassName('radio');
+    for (var index = 0; index < radios.length; index++) {
+        let l = document.querySelectorAll(`.${radios[index].value}`)
+        if (radios[index].checked) {
+            for (let index = 0; index < l.length; index++) {
+                let m = l[index]
+                console.log(m.value)
+                if (m.value == 'GitHub') {
+                    setBg()
+                    tag.disabled = true;
+                } else if (m.value == 'Unsplash') {
+                    getLinkToImageUnsplash();
+                    tag.disabled = false;
+                } else if (m.value == 'Flickr') {
+                    getLinkToImageFlickr();
+                    tag.disabled = false;
+                }
+            }
+        }
+    }
+}
+radio.checked = true;
+getCheckedSourceImg()
+
+const radios = document.querySelectorAll('.radio');
+if (radios.length > 0) {
+    for (let index = 0; index < radios.length; index++) {
+        let radio = radios[index];
+        radio.addEventListener("click", function(e) {
+            setTimeout(function() {
+                getCheckedSourceImg()
+            }, 5)
+        });
+    }
+}
+
+// document.querySelectorAll(".radio").forEach(el => {
+//     el.onchange = () => localStorage.setItem(el.id, el.checked);
+//     el.checked = localStorage.getItem(el.id) === "true";
+// })
 
 //------------------------weather
 const weatherIcon = document.querySelector('.weather-icon');
@@ -209,7 +326,6 @@ async function getWeather() {
         wind.textContent = `${library.wind[langSelect]}: ${data.wind.speed.toFixed(0)} ${library.windSpeed[langSelect]}`;
         humidity.textContent = `${library.humidity[langSelect]}: ${data.main.humidity.toFixed(0)}%`;
         weatherError.textContent = ''
-
     }
 };
 
@@ -402,20 +518,18 @@ document.querySelector(".volume-button").addEventListener("click", () => {
 
 //----------------settings
 //menu
-const settingsAll = document.querySelectorAll('.settings-menu, .cross, .bg-settings')
-if (settingsAll.length > 0) {
-    for (let index = 0; index < settingsAll.length; index++) {
-        const setting = settingsAll[index];
-        const settingsMenu = document.querySelector('.settings-menu')
-        const settings = document.querySelector('.settings');
-        const bgSettings = document.querySelector('.bg-settings')
-        setting.addEventListener("click", function(e) {
-            settings.classList.toggle('hidden');
-            settingsMenu.classList.toggle('hidden-icon');
-            bgSettings.classList.toggle('bg-settings-active');
-        });
+const settingsMenu = document.querySelector('.settings-menu')
+const settings = document.querySelector('.settings');
+const cross = document.querySelector('.cross')
+document.addEventListener('click', event => {
+    if (event.composedPath().includes(settingsMenu)) {
+        settings.classList.add('hidden')
+    } else if (event.composedPath().includes(cross)) {
+        settings.classList.remove('hidden')
+    } else if (!event.composedPath().includes(settings)) {
+        settings.classList.remove('hidden')
     }
-};
+})
 
 //hidden block
 let hideBlocks = document.querySelectorAll('.hide-time, .hide-date, .hide-greeting, .hide-quote, .hide-weather, .hide-audio, .hide-todolist')
@@ -427,7 +541,7 @@ if (hideBlocks.length > 0) {
         hideBlock.addEventListener("click", function(e) {
             setTimeout(function() {
                 getCheckedCheck()
-            }, 50)
+            }, 5)
 
         });
     }
