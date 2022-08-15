@@ -46,7 +46,6 @@ export const library = {
     hideWheather: { en: 'Wheather', ru: 'Погода' },
     hidePlayer: { en: 'Player', ru: 'Аудиоплеер' },
     hideTodolist: { en: 'ToDo List', ru: 'Список дел' },
-
     todolist: { en: 'ToDoList', ru: 'Список дел' },
     addTask: { en: 'Add', ru: 'Добавить' },
     taskPlaceholder: { en: 'Add your new task', ru: 'Добавьте задачу' },

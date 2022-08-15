@@ -569,7 +569,7 @@ body {
     visibility: visible;
 }
 
-.hide-toDo .toDo h3 {
+.toDo h3 {
     padding: 10px;
     padding-bottom: 5px;
 }

@@ -49,7 +49,7 @@ const hideGreeting = document.querySelector('.hide-greeting');
 const hideQuote = document.querySelector('.hide-quote');
 const hideWheather = document.querySelector('.hide-weather');
 const hidePlayer = document.querySelector('.hide-audio');
-const hideTodolist = document.querySelector('.hide-todolist');
+const hideTodolist = document.querySelector('.hide-toDoListAll');
 const todolist = document.querySelector('.todolist');
 const addTask = document.querySelector('.add');
 const listTask = document.querySelector('.list');
@@ -72,7 +72,7 @@ function translatSettings() {
     todolist.textContent = library.todolist[langSelect]
     addTask.textContent = library.addTask[langSelect]
     listTask.textContent = library.listTask[langSelect]
-    iner.placeholder = `${library.taskPlaceholder[langSelect]}`;
+    iner.placeholder = `${library.taskPlaceholder[langSelect]}`
 }
 
 //time date
