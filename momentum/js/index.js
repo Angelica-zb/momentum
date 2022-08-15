@@ -1,6 +1,18 @@
-// alert('Уважаемый проверяющий, дождитесь пожалуйста полной загрузки страницы и обратите внимание, что Unsplash API имеет ограничение в 50 картинок в час. Просьба не злоупотреблять именно на этом API переключением тегов и картинок, на деле часто бывает, если пощелкать пару раз подряд он блокируется, но через час снова будет работать. Вот ссылка на документацию,чтобы не быть голословной https://unsplash.com/documentation.')
+window.onload = function() {
+    if (localStorage.getItem("onloadBefore" === null)) {
+        alert('Уважаемый проверяющий, дождитесь пожалуйста полной загрузки страницы и обратите внимание, что Unsplash API имеет ограничение в 50 картинок в час. Просьба не злоупотреблять именно на этом API переключением тегов и картинок, на деле часто бывает, если пощелкать пару раз подряд он блокируется, но через час снова будет работать. Вот ссылка на документацию,чтобы не быть голословной https://unsplash.com/documentation.');
+        localStorage.setItem("onloadBefore", true);
+    }
+}
+
 //-------------------translation
-let langSelect = 'en';
+let langSelect = '';
+if (localStorage.getItem('language') != undefined) {
+    langSelect = localStorage.getItem('language');
+} else {
+    langSelect = 'en';
+}
+
 import { library } from './list.js';
 const ru = document.querySelector('.ru');
 const en = document.querySelector('.en');
@@ -38,6 +50,10 @@ const hideQuote = document.querySelector('.hide-quote');
 const hideWheather = document.querySelector('.hide-weather');
 const hidePlayer = document.querySelector('.hide-audio');
 const hideTodolist = document.querySelector('.hide-todolist');
+const todolist = document.querySelector('.todolist');
+const addTask = document.querySelector('.add');
+const listTask = document.querySelector('.list');
+const iner = document.querySelector('.in')
 
 function translatSettings() {
     settingsH3.textContent = library.settingsH3[langSelect]
@@ -53,6 +69,10 @@ function translatSettings() {
     hideWheather.textContent = library.hideWheather[langSelect]
     hidePlayer.textContent = library.hidePlayer[langSelect]
     hideTodolist.textContent = library.hideTodolist[langSelect]
+    todolist.textContent = library.todolist[langSelect]
+    addTask.textContent = library.addTask[langSelect]
+    listTask.textContent = library.listTask[langSelect]
+    iner.placeholder = `${library.taskPlaceholder[langSelect]}`;
 }
 
 //time date
@@ -76,7 +96,7 @@ function showTime() {
     let timeScrin = new Date().toLocaleTimeString();
     time.textContent = timeScrin;
     showDate();
-    getTimeOfDay();
+    // getTimeOfDay();
     showGreeting()
     getTimeOfDayLang()
     setTimeout(showTime, 1000);
@@ -115,7 +135,6 @@ function showGreeting() {
     let timeOfDay = getTimeOfDayLang();
     nameGret.placeholder = `${library.greetingPlace[langSelect]}`;
     greeting.textContent = `${library.greeting[langSelect]}${timeOfDay}`;
-    //setTimeout(getTimeOfDay, 1000);
 }
 showGreeting()
 
@@ -144,7 +163,7 @@ function getLocalStorage() {
     if (localStorage.getItem('name')) {
         nameGret.value = localStorage.getItem('name');
     }
-    langSelect = localStorage.getItem('language') || 'en'
+    langSelect = localStorage.getItem('language') || 'en';
     cityWeath.value = localStorage.getItem('city') || (`${library.cityMinsk[langSelect]}`);
     let n = getTimeOfDay();
     tagVal = localStorage.getItem('tag') || n;
@@ -187,7 +206,7 @@ function getSlideNext() {
         if (radios[index].checked) {
             for (let index = 0; index < l.length; index++) {
                 let m = l[index]
-                console.log(m.value)
+
                 if (m.value == 'GitHub') {
                     let timeOfDay = getTimeOfDay();
                     if (randomNum < 20) {
@@ -206,21 +225,26 @@ function getSlideNext() {
 }
 
 function getSlidePrev() {
-    if (radios[index].checked) {
-        for (let index = 0; index < l.length; index++) {
-            let m = l[index]
-            console.log(m.value)
-            if (m.value == 'GitHub') {
-                let timeOfDay = getTimeOfDay();
-                if (randomNum > 1) {
-                    randomNum--
-                } else { randomNum = 20 }
-                randomNum = (String(randomNum)).padStart(2, '0')
-                document.body.style.backgroundImage = `url('https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${randomNum}.jpg')`;
-            } else if (m.value == 'Unsplash') {
-                getLinkToImageUnsplash();
-            } else {
-                getLinkToImageFlickr();
+    const radios = document.getElementsByClassName('radio');
+    for (var index = 0; index < radios.length; index++) {
+        let l = document.querySelectorAll(`.${radios[index].value}`)
+
+        if (radios[index].checked) {
+            for (let index = 0; index < l.length; index++) {
+                let m = l[index]
+
+                if (m.value == 'GitHub') {
+                    let timeOfDay = getTimeOfDay();
+                    if (randomNum > 1) {
+                        randomNum--
+                    } else { randomNum = 20 }
+                    randomNum = (String(randomNum)).padStart(2, '0')
+                    document.body.style.backgroundImage = `url('https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${randomNum}.jpg')`;
+                } else if (m.value == 'Unsplash') {
+                    getLinkToImageUnsplash();
+                } else {
+                    getLinkToImageFlickr();
+                }
             }
         }
     }
@@ -260,7 +284,6 @@ function getCheckedSourceImg() {
         if (radios[index].checked) {
             for (let index = 0; index < l.length; index++) {
                 let m = l[index]
-                console.log(m.value)
                 if (m.value == 'GitHub') {
                     setBg()
                     tag.disabled = true;
@@ -275,25 +298,18 @@ function getCheckedSourceImg() {
         }
     }
 }
-radio.checked = true;
-getCheckedSourceImg()
+// radio.checked = true;
+// getCheckedSourceImg()
 
 const radios = document.querySelectorAll('.radio');
 if (radios.length > 0) {
     for (let index = 0; index < radios.length; index++) {
         let radio = radios[index];
         radio.addEventListener("click", function(e) {
-            setTimeout(function() {
-                getCheckedSourceImg()
-            }, 5)
+            getCheckedSourceImg()
         });
     }
 }
-
-// document.querySelectorAll(".radio").forEach(el => {
-//     el.onchange = () => localStorage.setItem(el.id, el.checked);
-//     el.checked = localStorage.getItem(el.id) === "true";
-// })
 
 //------------------------weather
 const weatherIcon = document.querySelector('.weather-icon');
@@ -532,7 +548,7 @@ document.addEventListener('click', event => {
 })
 
 //hidden block
-let hideBlocks = document.querySelectorAll('.hide-time, .hide-date, .hide-greeting, .hide-quote, .hide-weather, .hide-audio, .hide-todolist')
+let hideBlocks = document.querySelectorAll('.hide-time, .hide-date, .hide-greeting, .hide-quote, .hide-weather, .hide-audio, .hide-toDoListAll')
 
 if (hideBlocks.length > 0) {
     for (let index = 0; index < hideBlocks.length; index++) {
@@ -572,4 +588,86 @@ function getCheckedCheck() {
 document.querySelectorAll(".checkbox").forEach(el => {
     el.onchange = () => localStorage.setItem(el.id, el.checked);
     el.checked = localStorage.getItem(el.id) === "true";
+})
+
+//-----------toDoList
+//menu
+const toDoMenu = document.querySelector('.toDo-menu')
+const toDo = document.querySelector('.toDo');
+const crossList = document.querySelector('.cross-list')
+
+
+document.addEventListener('click', event => {
+    if (event.composedPath().includes(toDoMenu)) {
+        toDo.classList.add('active')
+    } else if (event.composedPath().includes(crossList)) {
+        toDo.classList.remove('active')
+    } else if (!event.composedPath().includes(toDo)) {
+        toDo.classList.remove('active')
+    }
+})
+
+
+let toDoList = [];
+if (localStorage.getItem('todo') != undefined) {
+    toDoList = JSON.parse(localStorage.getItem('todo'));
+    out();
+}
+
+const add = document.querySelector('.add')
+
+add.addEventListener('click', function() {
+    let d = document.querySelector('.in').value;
+    if (d != '') {
+        let temp = {};
+        temp.todo = d;
+        temp.checked = false;
+        let i = toDoList.length;
+        toDoList[i] = temp;
+        out();
+        localStorage.setItem('todo', JSON.stringify(toDoList));
+    }
+    document.querySelector('.in').value = '';
+})
+
+function out() {
+    let out = '';
+    for (let i = 0; i < toDoList.length; i++) {
+
+        if (toDoList[i].checked == true) {
+            out += `<div class="task-text"><input class="input" id="check${i}" type="checkbox" name="check" value="check${i}" checked  >`;
+            out += `<label class="label" for="check${i}">${toDoList[i].todo}</label>`;
+            out += '</div>';
+        } else {
+            out += `<div class="task-text"><input class="input" id="check${i}" type="checkbox" name="check" value="check${i}" >`;
+            out += `<label class="label" for="check${i}">${toDoList[i].todo}</label>`;
+            out += '</div>';
+        }
+
+    }
+    document.querySelector('.out').innerHTML = out;
+
+
+    const todoChecks = document.querySelectorAll('.input')
+
+    for (let i = 0; i < todoChecks.length; i++) {
+        let todoCheck = todoChecks[i]
+
+        todoCheck.addEventListener('click', function() {
+            if (todoCheck.checked == true) {
+                toDoList[i].checked = true;
+                localStorage.setItem('todo', JSON.stringify(toDoList));
+            } else {
+                toDoList[i].checked = false;
+                localStorage.setItem('todo', JSON.stringify(toDoList));
+            }
+        })
+    }
+}
+
+let del = document.querySelector('.delete')
+del.addEventListener('click', function() {
+    toDoList = [];
+    localStorage.setItem('todo', JSON.stringify(toDoList));
+    out();
 })

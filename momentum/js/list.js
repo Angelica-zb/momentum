@@ -47,11 +47,9 @@ export const library = {
     hidePlayer: { en: 'Player', ru: 'Аудиоплеер' },
     hideTodolist: { en: 'ToDo List', ru: 'Список дел' },
 
-
-
-    titleTodolist: { en: 'ToDoList', ru: 'Список дел' },
-    addTaskBtn: { en: 'Add', ru: 'Добавить' },
-    taskDiscription: { en: 'Add your new todo', ru: 'Добавьте задачу' },
-    titleList: { en: 'My list:', ru: 'Мой список:' },
+    todolist: { en: 'ToDoList', ru: 'Список дел' },
+    addTask: { en: 'Add', ru: 'Добавить' },
+    taskPlaceholder: { en: 'Add your new task', ru: 'Добавьте задачу' },
+    listTask: { en: 'My list:', ru: 'Мой список:' },
 
 }

@@ -265,11 +265,18 @@ body {
 
 .footer {
     display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer-quote {
+    display: flex;
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
-    width: 100%;
-    height: 30vh;
+    width: 90%;
+    height: 25vh;
     min-height: 160px;
     padding: 20px;
     transition: 0.3s;
@@ -286,24 +293,6 @@ body {
 
 .author {
     min-height: 20px;
-}
-
-@media (max-width: 768px) {
-    .time {
-        min-height: 80px;
-        font-size: 72px;
-    }
-    .greeting-container {
-        min-height: 40px;
-        font-size: 32px;
-    }
-    .greeting {
-        padding: 5px;
-    }
-    .name {
-        font-size: 32px;
-        padding: 5px;
-    }
 }
 
 
@@ -389,25 +378,13 @@ body {
     transition: 0.25s;
 }
 
-.bg-settings {
-    display: block;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0);
-    z-index: -5;
-    transition: all 1s ease;
-}
 
-.bg-settings-active {
-    background-color: rgba(0, 0, 0, 0.2);
-    z-index: 900;
-}
+/* settings */
 
 .settings-menu {
     width: 30px;
     position: absolute;
-    left: 25px;
+    left: 2%;
     top: 93%;
 }
 
@@ -420,7 +397,6 @@ body {
 }
 
 .settings {
-    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -428,8 +404,10 @@ body {
     width: 350px;
     /* height: 200px; */
     position: absolute;
-    left: -400px;
-    top: 47%;
+    left: 15px;
+    opacity: 0;
+    visibility: hidden;
+    top: 46%;
     background: rgb(31 33 18 / 97%);
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 16px;
@@ -439,20 +417,23 @@ body {
 }
 
 .hidden {
-    left: 15px;
+    opacity: 1;
+    visibility: visible;
 }
 
 .settings h3 {
     padding: 10px;
 }
 
-.cross {
+.cross,
+.cross-list {
     position: absolute;
     top: 13px;
     right: 13px;
 }
 
-.cross svg {
+.cross svg,
+.cross-list svg {
     width: 16px;
     height: 16px;
     fill: white;
@@ -543,6 +524,146 @@ body {
     justify-content: start;
     gap: 5px;
     padding-bottom: 5px;
+}
+
+
+/* toDList */
+
+.toDoListAll {
+    transition: all 0.3s linear;
+}
+
+.toDo-menu {
+    width: 30px;
+    position: absolute;
+    right: 2%;
+    top: 93%;
+}
+
+.toDo-menu svg {
+    fill: white;
+}
+
+.toDo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 350px;
+    position: absolute;
+    opacity: 0;
+    visibility: hidden;
+    right: 15px;
+    /* right: -405px; */
+    bottom: 2%;
+    background: rgb(31 33 18 / 97%);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 16px;
+    border: 0.5px solid rgb(228, 239, 122);
+    z-index: 1000;
+    transition: all 0.3s linear;
+}
+
+.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.hide-toDo .toDo h3 {
+    padding: 10px;
+    padding-bottom: 5px;
+}
+
+.textTask {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.addTask {
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: #fff;
+    border: 0;
+    outline: 0;
+    outline-color: initial;
+    outline-style: initial;
+    outline-width: 0px;
+    border-bottom: 1px solid #fff;
+    background-color: transparent;
+    margin-bottom: 10px;
+}
+
+.in {
+    width: 80%;
+    height: 25px;
+    background: #FFFFFF;
+    border-radius: 10px;
+    border: 0;
+    padding: 10px;
+    margin: 10px;
+}
+
+.add {
+    width: 30%;
+    height: 25px;
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0px 4px 4px rgb(0 0 0 / 25%);
+    border-radius: 6px;
+    border: 0.5px solid rgb(228, 239, 122);
+    background-color: rgb(228, 239, 122);
+}
+
+.list {}
+
+.list-out {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    gap: 30px;
+}
+
+.task-text {
+    height: 30px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1px;
+}
+
+.out {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.task {
+    font-size: 20px;
+}
+
+.delete {
+    margin-left: 10px;
+    width: 20px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0px 4px 4px rgb(0 0 0 / 25%);
+    border-radius: 6px;
+    border: 0.5px solid rgb(228, 239, 122);
+    background-color: rgb(228, 239, 122);
+    background-image: url(../assets/img/eraser-solid.jpf);
+}
+
+.delete svg {
+    width: 15px;
+    height: 15px;
+    fill: #d44747;
 }
 
 
@@ -660,4 +781,73 @@ body {
 
 .radio:checked+label:after {
     opacity: 1;
+}
+
+
+/* checkbox */
+
+.label {
+    display: inline-block;
+    cursor: pointer;
+    position: relative;
+    padding-left: 25px;
+    margin-right: 15px;
+    font-size: 13px;
+}
+
+.input {
+    display: none;
+}
+
+.label:before {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+    position: absolute;
+    left: 0;
+    bottom: 1px;
+    background-color: rgb(228, 239, 122);
+    box-shadow: 0 2px 5px rgb(0 0 0 / 30%);
+}
+
+.input:checked+.label:before {
+    content: "\2713";
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+    font-size: 15px;
+    color: #d44747;
+    text-align: center;
+    line-height: 15px;
+}
+
+@media (max-width: 768px) {
+    .time {
+        min-height: 80px;
+        font-size: 72px;
+    }
+    .greeting-container {
+        min-height: 40px;
+        font-size: 32px;
+    }
+    .greeting {
+        padding: 5px;
+    }
+    .name {
+        font-size: 32px;
+        padding: 5px;
+    }
+    .footer {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 90%;
+        height: 40vh;
+        padding: 20px;
+        transition: 0.3s;
+    }
+    .toDo-menu {
+        right: -15%;
+    }
 }
