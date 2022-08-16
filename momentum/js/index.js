@@ -93,7 +93,7 @@ let randomNum = +getRandomNum();
 
 //------------time ------------date
 function showTime() {
-    let timeScrin = (new Date()).toLocaleTimeString();
+    let timeScrin = date.toLocaleTimeString();
     time.textContent = timeScrin;
     showDate();
     showGreeting()
@@ -103,13 +103,13 @@ function showTime() {
 showTime();
 
 function showDate() {
-    let dateW = (new Date()).toLocaleDateString(`${langSelect}-En`, options);
+    let dateW = date.toLocaleDateString(`${langSelect}-En`, options);
     dateScrin.textContent = dateW;
 }
 
 //-----------------greeting  
 function getTimeOfDayLang() {
-    let hoursNow = (new Date()).getHours();
+    let hoursNow = date.getHours();
     if (hoursNow < 6) {
         return library.night[langSelect]
     } else if (hoursNow < 12) {
@@ -123,7 +123,7 @@ function getTimeOfDayLang() {
 
 function getTimeOfDay() {
     let timeOfDay = '';
-    let hoursNow = (new Date()).getHours();
+    let hoursNow = date.getHours();
     const timeOfDayArr = ['night', 'morning', 'afternoon', 'evening'];
     let a = Math.floor(hoursNow / 6);
     timeOfDay = timeOfDayArr[a];
