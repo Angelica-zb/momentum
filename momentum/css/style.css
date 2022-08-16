@@ -626,6 +626,7 @@ body {
     justify-content: space-between;
     padding-bottom: 10px;
     gap: 10px;
+    transition: all 0.3s linear;
 }
 
 .task-text {
@@ -640,10 +641,12 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    transition: all 0.3s linear;
 }
 
 .task {
     font-size: 20px;
+    transition: all 0.3s linear;
 }
 
 .delete {
@@ -866,6 +869,6 @@ body {
         transition: 0.3s;
     }
     .toDo-menu {
-        right: -15%;
+        right: 2%;
     }
 }
