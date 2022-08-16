@@ -78,7 +78,7 @@ function translatSettings() {
 //time date
 const time = document.querySelector('.time');
 const date = new Date();
-const currentTime = date.toLocaleTimeString();
+//const currentTime = date.toLocaleTimeString();
 const dateScrin = document.querySelector('.date');
 const options = { weekday: 'long', month: 'long', day: 'numeric' };
 const currentDate = date.toLocaleDateString('en-En', options);
@@ -93,6 +93,7 @@ let randomNum = +getRandomNum();
 
 //------------time ------------date
 function showTime() {
+    const date = new Date();
     let timeScrin = date.toLocaleTimeString();
     time.textContent = timeScrin;
     showDate();
@@ -103,12 +104,14 @@ function showTime() {
 showTime();
 
 function showDate() {
+    const date = new Date();
     let dateW = date.toLocaleDateString(`${langSelect}-En`, options);
     dateScrin.textContent = dateW;
 }
 
 //-----------------greeting  
 function getTimeOfDayLang() {
+    const date = new Date();
     let hoursNow = date.getHours();
     if (hoursNow < 6) {
         return library.night[langSelect]
@@ -123,6 +126,7 @@ function getTimeOfDayLang() {
 
 function getTimeOfDay() {
     let timeOfDay = '';
+    const date = new Date();
     let hoursNow = date.getHours();
     const timeOfDayArr = ['night', 'morning', 'afternoon', 'evening'];
     let a = Math.floor(hoursNow / 6);
