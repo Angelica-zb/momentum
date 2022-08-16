@@ -6,13 +6,8 @@ window.onload = function() {
 }
 
 //-------------------translation
-let langSelect = 'en';
-if (localStorage.getItem('language') != undefined) {
-    langSelect = localStorage.getItem('language');
-} else {
-    langSelect = 'en';
-}
 
+let langSelect = 'en';
 import { library } from './list.js';
 const ru = document.querySelector('.ru');
 const en = document.querySelector('.en');
@@ -78,7 +73,6 @@ function translatSettings() {
 //time date
 const time = document.querySelector('.time');
 const date = new Date();
-//const currentTime = date.toLocaleTimeString();
 const dateScrin = document.querySelector('.date');
 const options = { weekday: 'long', month: 'long', day: 'numeric' };
 const currentDate = date.toLocaleDateString('en-En', options);
@@ -98,14 +92,14 @@ function showTime() {
     time.textContent = timeScrin;
     showDate();
     showGreeting()
-    getTimeOfDayLang()
+        // getTimeOfDayLang()
     setTimeout(showTime, 1000);
 }
 showTime();
 
 function showDate() {
     const date = new Date();
-    let dateW = date.toLocaleDateString(`${langSelect}-En`, options);
+    let dateW = date.toLocaleDateString(`${langSelect}-US`, options);
     dateScrin.textContent = dateW;
 }
 
@@ -166,7 +160,13 @@ function getLocalStorage() {
     if (localStorage.getItem('name')) {
         nameGret.value = localStorage.getItem('name');
     }
-    langSelect = localStorage.getItem('language') || 'en';
+    //langSelect = localStorage.getItem('language') || 'en';
+
+    if (localStorage.getItem('language')) {
+        langSelect = localStorage.getItem('language');
+    } else {
+        langSelect = 'en';
+    }
     cityWeath.value = localStorage.getItem('city') || (`${library.cityMinsk[langSelect]}`);
     let n = getTimeOfDay();
     tagVal = localStorage.getItem('tag') || n;
@@ -196,6 +196,8 @@ function setBg() {
     let bgNum = (getRandomNum()).padStart(2, '0')
     document.body.style.backgroundImage = `url('https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${bgNum}.jpg')`;
 }
+
+
 //setBg()
 
 slideNext.addEventListener('click', getSlideNext)
@@ -204,7 +206,7 @@ const radios = document.querySelectorAll('.radio');
 
 function getSlideNext() {
 
-    for (var index = 0; index < radios.length; index++) {
+    for (let index = 0; index < radios.length; index++) {
         let l = document.querySelectorAll(`.${radios[index].value}`)
 
         if (radios[index].checked) {
@@ -230,7 +232,7 @@ function getSlideNext() {
 
 function getSlidePrev() {
 
-    for (var index = 0; index < radios.length; index++) {
+    for (let index = 0; index < radios.length; index++) {
         let l = document.querySelectorAll(`.${radios[index].value}`)
 
         if (radios[index].checked) {
@@ -291,7 +293,7 @@ tagChanges.addEventListener('click', function() {
 
 function getCheckedSourceImg() {
 
-    for (var index = 0; index < radios.length; index++) {
+    for (let index = 0; index < radios.length; index++) {
         let l = document.querySelectorAll(`.${radios[index].value}`)
         if (radios[index].checked) {
             for (let index = 0; index < l.length; index++) {
@@ -566,7 +568,7 @@ if (hideBlocks.length > 0) {
 
 function getCheckedCheck() {
     const checkboxes = document.getElementsByClassName('checkbox');
-    for (var index = 0; index < checkboxes.length; index++) {
+    for (let index = 0; index < checkboxes.length; index++) {
         let l = document.querySelectorAll(`.${checkboxes[index].value}`)
         if (checkboxes[index].checked) {
             if (l.length > 0) {
@@ -596,7 +598,6 @@ document.querySelectorAll(".checkbox").forEach(el => {
 const toDoMenu = document.querySelector('.toDo-menu')
 const toDo = document.querySelector('.toDo');
 const crossList = document.querySelector('.cross-list')
-
 
 document.addEventListener('click', event => {
     if (event.composedPath().includes(toDoMenu)) {
@@ -638,15 +639,15 @@ function out() {
         if (toDoList[i].checked == true) {
             out += `<div class="task-text"><input class="input" id="check${i}" type="checkbox" name="check" value="check${i}" checked  >`;
             out += `<label class="label" for="check${i}">${toDoList[i].todo}</label>`;
-            out += '</div>';
+            out += '<button class="deleteBtt "></button></div>';
         } else {
             out += `<div class="task-text"><input class="input" id="check${i}" type="checkbox" name="check" value="check${i}" >`;
             out += `<label class="label" for="check${i}">${toDoList[i].todo}</label>`;
-            out += '</div>';
+            out += '<button class="deleteBtt "></button></div>';
         }
 
     }
-    document.querySelector('.out').innerHTML = out;
+    document.querySelector('.tasks').innerHTML = out;
 
 
     const todoChecks = document.querySelectorAll('.input')
@@ -666,9 +667,26 @@ function out() {
     }
 }
 
-let del = document.querySelector('.delete')
-del.addEventListener('click', function() {
-    toDoList = [];
-    localStorage.setItem('todo', JSON.stringify(toDoList));
-    out();
-})
+let Tasks = document.querySelector(".tasks");
+
+Tasks.addEventListener("mousedown", function(e) {
+    let item = e.target;
+    if (item.classList.contains("deleteBtt")) {
+        dell()
+    }
+});
+
+function dell() {
+    let deleteBtts = document.querySelectorAll('.deleteBtt')
+
+    for (let i = 0; i < deleteBtts.length; i++) {
+        let deleteBtt = deleteBtts[i]
+
+        deleteBtt.addEventListener('mouseup', function() {
+            toDoList = JSON.parse(localStorage.getItem('todo'));
+            toDoList.splice(i, 1);
+            localStorage.setItem('todo', JSON.stringify(toDoList));
+            out()
+        })
+    }
+}

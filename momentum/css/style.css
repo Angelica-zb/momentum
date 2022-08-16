@@ -581,7 +581,7 @@ body {
     justify-content: space-between;
 }
 
-.addTask {
+.addTasks {
     width: 90%;
     display: flex;
     flex-direction: row;
@@ -621,11 +621,11 @@ body {
 
 .list-out {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: space-between;
     padding-bottom: 10px;
-    gap: 30px;
+    gap: 10px;
 }
 
 .task-text {
@@ -647,6 +647,8 @@ body {
 }
 
 .delete {
+    position: absolute;
+    right: 95px;
     margin-left: 10px;
     width: 20px;
     height: 20px;
@@ -661,6 +663,25 @@ body {
     width: 15px;
     height: 15px;
     fill: #d44747;
+}
+
+.deleteBtt {
+    width: 22px;
+    height: 22px;
+    outline: none;
+    /* border: #464543; */
+    transition: all 0.4s;
+    background-image: url(../assets/svg/trash-solid.svg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-color: rgb(228, 239, 122);
+}
+
+.task-text {
+    min-width: 250px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
 }
 
 
