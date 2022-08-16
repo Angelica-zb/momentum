@@ -6,7 +6,7 @@ window.onload = function() {
 }
 
 //-------------------translation
-let langSelect = '';
+let langSelect = 'en';
 if (localStorage.getItem('language') != undefined) {
     langSelect = localStorage.getItem('language');
 } else {
@@ -96,7 +96,6 @@ function showTime() {
     let timeScrin = new Date().toLocaleTimeString();
     time.textContent = timeScrin;
     showDate();
-    // getTimeOfDay();
     showGreeting()
     getTimeOfDayLang()
     setTimeout(showTime, 1000);
@@ -182,7 +181,7 @@ function getLocalStorage() {
 
 window.addEventListener('load', getLocalStorage)
 
-//------------------slider
+//------------------backgroundImage
 function getRandomNum() {
     let ranNum = Math.floor(Math.random() * (20 - 1 + 1)) + 1;
     return String(ranNum)
@@ -197,9 +196,10 @@ function setBg() {
 
 slideNext.addEventListener('click', getSlideNext)
 slidePrev.addEventListener('click', getSlidePrev)
+const radios = document.querySelectorAll('.radio');
 
 function getSlideNext() {
-    const radios = document.getElementsByClassName('radio');
+
     for (var index = 0; index < radios.length; index++) {
         let l = document.querySelectorAll(`.${radios[index].value}`)
 
@@ -225,7 +225,7 @@ function getSlideNext() {
 }
 
 function getSlidePrev() {
-    const radios = document.getElementsByClassName('radio');
+
     for (var index = 0; index < radios.length; index++) {
         let l = document.querySelectorAll(`.${radios[index].value}`)
 
@@ -259,7 +259,6 @@ async function getLinkToImageUnsplash() {
     const url = `https://api.unsplash.com/photos/random?query=${tagVal}&client_id=OVjm8rzNtWjawsFh8ITvJLyI2sFPcl75zJr7V44pS1A`;
     const res = await fetch(url);
     const data = await res.json();
-    // console.log(data.urls.regular)
     document.body.style.backgroundImage = `url('${data.urls.regular}')`;
 }
 
@@ -268,8 +267,17 @@ async function getLinkToImageFlickr() {
     const res = await fetch(url);
     const data = await res.json();
     let n = Math.floor(Math.random() * (100 - 1 + 1)) + 1;
-    //console.log(data.photos.photo[n].url_l)
     document.body.style.backgroundImage = `url('${data.photos.photo[n].url_l}')`;
+}
+
+
+if (radios.length > 0) {
+    for (let index = 0; index < radios.length; index++) {
+        let radio = radios[index];
+        radio.addEventListener("click", function(e) {
+            getCheckedSourceImg()
+        });
+    }
 }
 
 tagChanges.addEventListener('click', function() {
@@ -278,7 +286,7 @@ tagChanges.addEventListener('click', function() {
 })
 
 function getCheckedSourceImg() {
-    const radios = document.getElementsByClassName('radio');
+
     for (var index = 0; index < radios.length; index++) {
         let l = document.querySelectorAll(`.${radios[index].value}`)
         if (radios[index].checked) {
@@ -298,18 +306,7 @@ function getCheckedSourceImg() {
         }
     }
 }
-// radio.checked = true;
-// getCheckedSourceImg()
 
-const radios = document.querySelectorAll('.radio');
-if (radios.length > 0) {
-    for (let index = 0; index < radios.length; index++) {
-        let radio = radios[index];
-        radio.addEventListener("click", function(e) {
-            getCheckedSourceImg()
-        });
-    }
-}
 
 //------------------------weather
 const weatherIcon = document.querySelector('.weather-icon');

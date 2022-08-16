@@ -619,8 +619,6 @@ body {
     background-color: rgb(228, 239, 122);
 }
 
-.list {}
-
 .list-out {
     display: flex;
     flex-direction: row;
@@ -657,7 +655,6 @@ body {
     border-radius: 6px;
     border: 0.5px solid rgb(228, 239, 122);
     background-color: rgb(228, 239, 122);
-    background-image: url(../assets/img/eraser-solid.jpf);
 }
 
 .delete svg {
