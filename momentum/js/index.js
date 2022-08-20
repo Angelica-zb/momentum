@@ -184,12 +184,12 @@ window.addEventListener('load', getLocalStorage)
 
 //------------------backgroundImage
 
-function getRandomNum() {
-    let ranNum = Math.floor(Math.random() * (20 - 1 + 1)) + 1;
+function getRandomNum(min, max) {
+    let ranNum = Math.floor(Math.random() * (max - min + min)) + 1;
     return String(ranNum)
 }
 
-let bgNum = (getRandomNum()).padStart(2, '0')
+let bgNum = (getRandomNum(1, 20)).padStart(2, '0')
 
 function setBg() {
     let timeOfDay = getTimeOfDay();
