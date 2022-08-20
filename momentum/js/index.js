@@ -1,4 +1,4 @@
-alert('Уважаемый проверяющий, дождитесь пожалуйста полной загрузки страницы. Просьба перед перед загрузкой чистить кэш или открывать сайт в режиме инкогнито. Обратите внимание, что Unsplash API имеет ограничение в 50 картинок в час. Просьба не злоупотреблять именно на этом API переключением тегов и картинок, на деле часто бывает, если пощелкать пару раз подряд он блокируется, но через час снова будет работать. Вот ссылка на документацию,чтобы не быть голословной https://unsplash.com/documentation.');
+// alert('Уважаемый проверяющий, дождитесь пожалуйста полной загрузки страницы. Просьба перед перед загрузкой чистить кэш или открывать сайт в режиме инкогнито. Обратите внимание, что Unsplash API имеет ограничение в 50 картинок в час. Просьба не злоупотреблять именно на этом API переключением тегов и картинок, на деле часто бывает, если пощелкать пару раз подряд он блокируется, но через час снова будет работать. Вот ссылка на документацию,чтобы не быть голословной https://unsplash.com/documentation.');
 
 //-------------------translation
 
@@ -171,7 +171,7 @@ function getLocalStorage() {
         radio.checked = localStorage.getItem('radio')
     }
 
-    getCheckedSourceImg();
+    //getCheckedSourceImg();
     getCheckedCheck();
     getWeather();
     changeQuotes()
@@ -180,23 +180,33 @@ function getLocalStorage() {
 
 window.addEventListener('load', getLocalStorage)
 
+
+
 //------------------backgroundImage
+
 function getRandomNum() {
     let ranNum = Math.floor(Math.random() * (20 - 1 + 1)) + 1;
     return String(ranNum)
 }
 
+let bgNum = (getRandomNum()).padStart(2, '0')
+
 function setBg() {
     let timeOfDay = getTimeOfDay();
-    let bgNum = (getRandomNum()).padStart(2, '0')
-    document.body.style.backgroundImage = `url('https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${bgNum}.jpg')`;
+
+    const img = new Image();
+    let n = `https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${bgNum}.jpg`;
+    img.src = `${n}`;
+    const body = document.querySelector('body');
+    img.onload = () => {
+        body.style.backgroundImage = `url(${n})`;
+    };
 }
-
-
-//setBg()
+setBg()
 
 slideNext.addEventListener('click', getSlideNext)
 slidePrev.addEventListener('click', getSlidePrev)
+
 const radios = document.querySelectorAll('.radio');
 
 function getSlideNext() {
@@ -209,12 +219,12 @@ function getSlideNext() {
                 let m = l[index]
 
                 if (m.value == 'GitHub') {
-                    let timeOfDay = getTimeOfDay();
-                    if (randomNum < 20) {
-                        randomNum++
-                    } else { randomNum = 1 }
-                    randomNum = (String(randomNum)).padStart(2, '0')
-                    document.body.style.backgroundImage = `url('https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${randomNum}.jpg')`;
+
+                    if (bgNum < 20) {
+                        bgNum++
+                    } else { bgNum = 1 }
+                    bgNum = (String(bgNum)).padStart(2, '0')
+                    setBg()
                 } else if (m.value == 'Unsplash') {
                     getLinkToImageUnsplash();
                 } else {
@@ -236,11 +246,11 @@ function getSlidePrev() {
 
                 if (m.value == 'GitHub') {
                     let timeOfDay = getTimeOfDay();
-                    if (randomNum > 1) {
-                        randomNum--
-                    } else { randomNum = 20 }
-                    randomNum = (String(randomNum)).padStart(2, '0')
-                    document.body.style.backgroundImage = `url('https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${randomNum}.jpg')`;
+                    if (bgNum > 1) {
+                        bgNum--
+                    } else { bgNum = 20 }
+                    bgNum = (String(bgNum)).padStart(2, '0')
+                    setBg()
                 } else if (m.value == 'Unsplash') {
                     getLinkToImageUnsplash();
                 } else {
@@ -251,16 +261,24 @@ function getSlidePrev() {
     }
 }
 
-//-----------Images API
+//-- -- -- -- -- - Images API
 
 const tag = document.querySelector('.tag');
 const tagChanges = document.querySelector('.tag-change');
 
 async function getLinkToImageUnsplash() {
-    const url = `https://api.unsplash.com/photos/random?query=${tagVal}&client_id=OVjm8rzNtWjawsFh8ITvJLyI2sFPcl75zJr7V44pS1A`;
+
+    let url = `https://api.unsplash.com/photos/random?query=${tagVal}&client_id=OVjm8rzNtWjawsFh8ITvJLyI2sFPcl75zJr7V44pS1A`;
     const res = await fetch(url);
     const data = await res.json();
-    document.body.style.backgroundImage = `url('${data.urls.regular}')`;
+
+    const img = new Image();
+    let n = `${data.urls.regular}`;
+    img.src = `${n}`;
+    const body = document.querySelector('body');
+    img.onload = () => {
+        body.style.backgroundImage = `url(${n})`;
+    };
 }
 
 async function getLinkToImageFlickr() {
@@ -268,9 +286,15 @@ async function getLinkToImageFlickr() {
     const res = await fetch(url);
     const data = await res.json();
     let n = Math.floor(Math.random() * (100 - 1 + 1)) + 1;
-    document.body.style.backgroundImage = `url('${data.photos.photo[n].url_l}')`;
-}
 
+    const img = new Image();
+    let k = `${data.photos.photo[n].url_l}`;
+    img.src = `${k}`;
+    const body = document.querySelector('body');
+    img.onload = () => {
+        body.style.backgroundImage = `url(${k})`;
+    };
+}
 
 if (radios.length > 0) {
     for (let index = 0; index < radios.length; index++) {
@@ -307,7 +331,6 @@ function getCheckedSourceImg() {
         }
     }
 }
-
 
 //------------------------weather
 const weatherIcon = document.querySelector('.weather-icon');
