@@ -285,7 +285,7 @@ async function getLinkToImageFlickr() {
     const url = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=764cc0de54bd68d70c98eae8f5350c01&tags=${tagVal}&extras=url_l&format=json&nojsoncallback=1`;
     const res = await fetch(url);
     const data = await res.json();
-    let n = Math.floor(Math.random() * (100 - 1 + 1)) + 1;
+    let n = getRandomNum(1, 100);
 
     const img = new Image();
     let k = `${data.photos.photo[n].url_l}`;
