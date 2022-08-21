@@ -1,5 +1,3 @@
-// alert('Уважаемый проверяющий, дождитесь пожалуйста полной загрузки страницы. Просьба перед перед загрузкой чистить кэш или открывать сайт в режиме инкогнито. Обратите внимание, что Unsplash API имеет ограничение в 50 картинок в час. Просьба не злоупотреблять именно на этом API переключением тегов и картинок, на деле часто бывает, если пощелкать пару раз подряд он блокируется, но через час снова будет работать. Вот ссылка на документацию,чтобы не быть голословной https://unsplash.com/documentation.');
-
 //-------------------translation
 
 let langSelect = 'en';
@@ -180,10 +178,7 @@ function getLocalStorage() {
 
 window.addEventListener('load', getLocalStorage)
 
-
-
 //------------------backgroundImage
-
 function getRandomNum(min, max) {
     let ranNum = Math.floor(Math.random() * (max - min + min)) + 1;
     return String(ranNum)
@@ -423,6 +418,8 @@ function playAudio() {
     audio.src = playList[playNum].src;
     if (!isPlay) {
         playItems[playNum].classList.add('item-active');
+        playItems[playNum].classList.add('item-active-color');
+
         nameSong.textContent = playList[playNum].title; //player-custom
         lengthSong.textContent = playList[playNum].duration; //player-custom
         audio.currentTime = currentSong; //player-custom
@@ -451,6 +448,7 @@ function playNextAudio() {
     play.classList.add('pause');
     isPlay = false;
     playItems[playNum].classList.remove('item-active');
+    playItems[playNum].classList.remove('item-active-color');
     if (playNum < playList.length - 1) {
         playNum++
     } else {
@@ -463,6 +461,7 @@ function playPrevAudio() {
     audio.currentTime = 0;
     play.classList.add('pause');
     playItems[playNum].classList.remove('item-active');
+    playItems[playNum].classList.remove('item-active-color');
     isPlay = false;
     if (playNum > 0) {
         playNum--
@@ -513,10 +512,12 @@ if (playItems.length > 0) {
                 let currentSong = 0;
                 audio.pause();
                 playItems[playNum].classList.remove('item-active');
+                playItems[playNum].classList.remove('item-active-color');
                 play.classList.add('pause');
                 playNum = i;
                 audio.src = playList[playNum].src;
                 playItems[playNum].classList.add('item-active');
+                playItems[playNum].classList.add('item-active-color');
                 nameSong.textContent = playList[playNum].title;
                 lengthSong.textContent = playList[playNum].duration;
                 audio.currentTime = currentSong;
@@ -525,6 +526,7 @@ if (playItems.length > 0) {
             } else {
                 pauseAudio();
                 playItems[playNum].classList.remove('item-active');
+
                 playNum = i;
                 playAudio()
             }
@@ -656,7 +658,7 @@ function out() {
 
         if (toDoList[i].checked == true) {
             out += `<div class="task-text"><input class="input" id="check${i}" type="checkbox" name="check" value="check${i}" checked  >`;
-            out += `<label class="label" for="check${i}">${toDoList[i].todo}</label>`;
+            out += `<label class="label label-through" for="check${i}">${toDoList[i].todo}</label>`;
             out += '<button class="deleteBtt "></button></div>';
         } else {
             out += `<div class="task-text"><input class="input" id="check${i}" type="checkbox" name="check" value="check${i}" >`;
@@ -668,6 +670,7 @@ function out() {
     document.querySelector('.tasks').innerHTML = out;
 
     const todoChecks = document.querySelectorAll('.input')
+    const label = document.querySelectorAll('.label')
 
     for (let i = 0; i < todoChecks.length; i++) {
         let todoCheck = todoChecks[i]
@@ -676,9 +679,11 @@ function out() {
             if (todoCheck.checked == true) {
                 toDoList[i].checked = true;
                 localStorage.setItem('todo', JSON.stringify(toDoList));
+                label[i].classList.add("label-through")
             } else {
                 toDoList[i].checked = false;
                 localStorage.setItem('todo', JSON.stringify(toDoList));
+                label[i].classList.remove("label-through")
             }
         })
     }

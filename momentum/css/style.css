@@ -83,6 +83,10 @@ body {
     background-repeat: no-repeat;
 }
 
+.item-active-color {
+    color: rgb(228, 239, 122);
+}
+
 .item-active::before {
     background-image: url("../assets/svg/pause.svg");
 }
@@ -317,7 +321,7 @@ body {
 }
 
 .progress {
-    background: coral;
+    background: rgb(228, 239, 122);
     width: 0%;
     height: 100%;
     transition: 0.25s;
@@ -402,13 +406,13 @@ body {
     align-items: center;
     justify-content: center;
     width: 350px;
-    /* height: 200px; */
     position: absolute;
     left: 15px;
     opacity: 0;
     visibility: hidden;
     top: 39%;
-    background: rgb(31 33 18 / 97%);
+    background: rgb(31 33 18 / 40%);
+    backdrop-filter: blur(10px);
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 16px;
     border: 0.5px solid rgb(228, 239, 122);
@@ -576,9 +580,9 @@ body {
     opacity: 0;
     visibility: hidden;
     right: 15px;
-    /* right: -405px; */
     bottom: 2%;
-    background: rgb(31 33 18 / 97%);
+    background: rgb(31 33 18 / 40%);
+    backdrop-filter: blur(10px);
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 16px;
     border: 0.5px solid rgb(228, 239, 122);
@@ -652,11 +656,17 @@ body {
 }
 
 .task-text {
-    height: 30px;
+    padding-bottom: 10px;
+    max-width: 320px;
+    min-width: 320px;
     display: flex;
     flex-direction: row;
-    align-items: center;
-    gap: 1px;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.label-through {
+    text-decoration: line-through;
 }
 
 .out {
@@ -691,7 +701,7 @@ body {
 }
 
 .deleteBtt {
-    width: 22px;
+    min-width: 22px;
     height: 22px;
     outline: none;
     /* border: #464543; */
@@ -700,13 +710,6 @@ body {
     background-position: center center;
     background-repeat: no-repeat;
     background-color: rgb(228, 239, 122);
-}
-
-.task-text {
-    min-width: 250px;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
 }
 
 
